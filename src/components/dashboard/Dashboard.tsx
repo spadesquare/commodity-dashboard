@@ -7,6 +7,7 @@ import { CostModelPanel } from "./CostModelPanel"
 import { MarketSnapshot } from "./MarketSnapshot"
 import { SpreadsPanel } from "./SpreadsPanel"
 import { DataManager } from "./DataManager"
+import { CurrencyPanel } from "./CurrencyPanel"
 import { Sun, Moon, TrendingUp, TrendingDown, Activity, Calendar, BarChart2 } from "lucide-react"
 
 const DATA_KEY = 'commodity_custom_data'
@@ -114,14 +115,15 @@ function KpiStrip({ kpis }: { kpis: KpiDef[] }) {
 }
 
 // ─── Tab types ─────────────────────────────────────────────────────
-type Tab = 'trends' | 'model' | 'snapshot' | 'spreads' | 'data'
+type Tab = 'trends' | 'model' | 'snapshot' | 'spreads' | 'currency' | 'data'
 
 const TABS: { id: Tab; label: string }[] = [
-  { id: 'trends', label: 'Price Trends' },
-  { id: 'model', label: 'Cost Model' },
+  { id: 'trends',   label: 'Price Trends' },
+  { id: 'model',    label: 'Cost Model' },
   { id: 'snapshot', label: 'Market Snapshot' },
-  { id: 'spreads', label: 'EU / CN Spreads' },
-  { id: 'data', label: 'Manage Data' },
+  { id: 'spreads',  label: 'EU / CN Spreads' },
+  { id: 'currency', label: 'FX / Currencies' },
+  { id: 'data',     label: 'Manage Data' },
 ]
 
 // ─── Main Dashboard ───────────────────────────────────────────────
@@ -219,6 +221,7 @@ export function Dashboard() {
         {activeTab === 'model' && <CostModelPanel isLight={isLight} R={R} toast={toast} />}
         {activeTab === 'snapshot' && <MarketSnapshot isLight={isLight} R={R} toast={toast} />}
         {activeTab === 'spreads' && <SpreadsPanel R={R} />}
+        {activeTab === 'currency' && <CurrencyPanel isLight={isLight} toast={toast} />}
         {activeTab === 'data' && <DataManager R={R} onSave={onDataSaved} onReset={() => { setCustomR(null); localStorage.removeItem(DATA_KEY); toast('Reset to default data', true) }} toast={toast} customSeries={customSeries} onSeriesSaved={onSeriesSaved} />}
 
         {/* ── Footer ── */}
