@@ -10,6 +10,7 @@ import { WorldMap } from "@/components/ui/map"
 import { DT, DT_FULL, FX, FX_SERIES, FX_MAP, FX_LOCATIONS, type FxSeries } from "@/data/currencies"
 import { TrendingUp, TrendingDown, Minus, Download, Info } from "lucide-react"
 import html2canvas from "html2canvas"
+import { FxSpendPanel } from "./FxSpendPanel"
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend, Filler)
 
@@ -429,6 +430,9 @@ export function CurrencyPanel({ isLight, toast }: { isLight: boolean; toast: (m:
           ))}
         </div>
       </div>
+
+      {/* ── FX Spend Panel ── */}
+      <FxSpendPanel isLight={isLight} fi={fi} ti={ti} toast={toast} />
 
     </div>
   )
