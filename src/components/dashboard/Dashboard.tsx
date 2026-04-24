@@ -134,7 +134,7 @@ export function Dashboard() {
   const [fromIdx, setFromIdx] = useState(0)
   const [toIdx, setToIdx] = useState(DT.length - 1)
   const [hidden, setHidden] = useState<Set<string>>(new Set())
-  const [isLight, setIsLight] = useState(false)
+  const [isLight, setIsLight] = useState(true)
   const [customR, setCustomR] = useState<RawData | null>(null)
   const [customSeries, setCustomSeries] = useState<Series[]>([])
   const [fredR, setFredR] = useState<RawData>({})

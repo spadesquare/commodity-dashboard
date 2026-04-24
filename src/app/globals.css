@@ -30,54 +30,54 @@
 }
 
 /* ═══════════════════════════════════════════════════
-   DARK THEME (default — deep OLED)
+   DARK THEME (default — medium grey)
    ═══════════════════════════════════════════════════ */
 :root {
-  --background: #000000;
+  --background: #464646;
   --foreground: #eef2ff;
-  --card: rgba(6,10,20,0.6);
+  --card: rgba(82,82,82,0.65);
   --card-foreground: #eef2ff;
-  --popover: #06080f;
+  --popover: #3e3e3e;
   --popover-foreground: #eef2ff;
-  --primary: #6366f1;
+  --primary: #818cf8;
   --primary-foreground: #ffffff;
-  --secondary: #0d1117;
-  --secondary-foreground: #94a3b8;
-  --muted: #0d1117;
-  --muted-foreground: #6b7280;
-  --accent: #6366f1;
+  --secondary: #3a3a3a;
+  --secondary-foreground: #b0b8cc;
+  --muted: #3a3a3a;
+  --muted-foreground: #909aaa;
+  --accent: #818cf8;
   --accent-foreground: #ffffff;
   --destructive: #f87171;
-  --border: rgba(255,255,255,0.08);
-  --input: rgba(255,255,255,0.08);
-  --ring: rgba(99,102,241,0.4);
+  --border: rgba(255,255,255,0.12);
+  --input: rgba(255,255,255,0.1);
+  --ring: rgba(129,140,248,0.4);
   --radius: 0.875rem;
 
-  --d-bg:        #000000;
-  --d-card:      rgba(6,10,20,0.6);
-  --d-raised:    rgba(10,15,28,0.7);
-  --d-inset:     rgba(2,4,10,0.8);
-  --d-hover:     rgba(15,22,42,0.8);
-  --d-border:    rgba(255,255,255,0.08);
-  --d-border-h:  rgba(255,255,255,0.15);
-  --d-border-f:  rgba(99,102,241,0.5);
+  --d-bg:        #464646;
+  --d-card:      rgba(82,82,82,0.6);
+  --d-raised:    rgba(92,92,92,0.65);
+  --d-inset:     rgba(52,52,52,0.85);
+  --d-hover:     rgba(104,104,104,0.6);
+  --d-border:    rgba(255,255,255,0.12);
+  --d-border-h:  rgba(255,255,255,0.22);
+  --d-border-f:  rgba(129,140,248,0.5);
   --d-text:      #eef2ff;
-  --d-muted:     #7b8499;
-  --d-dim:       #4a5568;
-  --d-brand:     #6366f1;
-  --d-brand-bg:  rgba(99,102,241,0.12);
-  --d-brand-bgh: rgba(99,102,241,0.2);
-  --d-green:     #22c55e;
+  --d-muted:     #b0b8cc;
+  --d-dim:       #7a8494;
+  --d-brand:     #818cf8;
+  --d-brand-bg:  rgba(129,140,248,0.15);
+  --d-brand-bgh: rgba(129,140,248,0.25);
+  --d-green:     #4ade80;
   --d-red:       #f87171;
-  --d-amber:     #f59e0b;
-  --d-purple:    #a78bfa;
-  --d-shadow:    0 0 0 0.5px rgba(255,255,255,0.04), 0 2px 12px rgba(0,0,0,0.9), 0 8px 40px rgba(0,0,0,0.6);
-  --d-shadow-h:  0 0 0 1px rgba(99,102,241,0.25), 0 4px 32px rgba(0,0,0,0.7);
-  --d-glass-bg:  rgba(6,10,20,0.55);
-  --d-glass-border: rgba(255,255,255,0.1);
+  --d-amber:     #fbbf24;
+  --d-purple:    #c4b5fd;
+  --d-shadow:    0 0 0 0.5px rgba(255,255,255,0.06), 0 2px 12px rgba(0,0,0,0.45), 0 8px 40px rgba(0,0,0,0.25);
+  --d-shadow-h:  0 0 0 1px rgba(129,140,248,0.28), 0 4px 32px rgba(0,0,0,0.35);
+  --d-glass-bg:  rgba(78,78,78,0.6);
+  --d-glass-border: rgba(255,255,255,0.15);
 
-  --d-grid:      rgba(255,255,255,0.04);
-  --d-tick:      #2d3748;
+  --d-grid:      rgba(255,255,255,0.07);
+  --d-tick:      #6a7282;
 }
 
 /* ═══════════════════════════════════════════════════
@@ -142,8 +142,8 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     background: var(--d-bg);
-    background-image: radial-gradient(ellipse 140% 90% at 15% 0%, rgba(30,45,100,0.55) 0%, transparent 60%),
-                      radial-gradient(ellipse 100% 60% at 85% 100%, rgba(10,20,60,0.4) 0%, transparent 55%);
+    background-image: radial-gradient(ellipse 140% 90% at 15% 0%, rgba(80,90,140,0.3) 0%, transparent 60%),
+                      radial-gradient(ellipse 100% 60% at 85% 100%, rgba(60,70,110,0.2) 0%, transparent 55%);
     background-attachment: fixed;
     color: var(--d-text);
     transition: background 0.25s, color 0.25s;
