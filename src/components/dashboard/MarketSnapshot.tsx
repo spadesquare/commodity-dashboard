@@ -9,7 +9,7 @@ import html2canvas from "html2canvas"
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend)
 
-export function MarketSnapshot({ isLight, R, toast }: { isLight: boolean; R: RawData; toast: (msg: string, success?: boolean) => void }) {
+export function MarketSnapshot({ isLight, R, toast, liveIds }: { isLight: boolean; R: RawData; toast: (msg: string, success?: boolean) => void; liveIds?: Set<string> }) {
   const [commodityId, setCommodityId] = useState('copper')
   const [fromIdx, setFromIdx] = useState(0)
   const [toIdx, setToIdx] = useState(DT.length - 1)
@@ -63,6 +63,7 @@ export function MarketSnapshot({ isLight, R, toast }: { isLight: boolean; R: Raw
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+      <style>{`@keyframes snap-live{0%,100%{opacity:1}50%{opacity:0.35}}`}</style>
 
       {/* Builder controls */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(160px,1fr))', gap: 12 }}>
@@ -97,7 +98,15 @@ export function MarketSnapshot({ isLight, R, toast }: { isLight: boolean; R: Raw
             </div>
             <div>
               <p style={{ fontSize: 10, color: 'var(--d-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>Market Snapshot</p>
-              <p style={{ fontSize: 16, fontWeight: 600, color: 'var(--d-text)', lineHeight: 1.2, marginTop: 2 }}>{sc?.label ?? '—'}</p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 2 }}>
+                <p style={{ fontSize: 16, fontWeight: 600, color: 'var(--d-text)', lineHeight: 1.2 }}>{sc?.label ?? '—'}</p>
+                {liveIds?.has(commodityId) && (
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3, fontSize: 9, fontWeight: 700, letterSpacing: '0.05em', color: '#22c55e', background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.28)', borderRadius: 4, padding: '1px 5px', textTransform: 'uppercase' }}>
+                    <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#22c55e', animation: 'snap-live 1.5s ease-in-out infinite' }} />
+                    LIVE
+                  </span>
+                )}
+              </div>
             </div>
           </div>
           <p style={{ fontFamily: "'Fira Code',monospace", fontSize: 10, color: 'var(--d-muted)', textAlign: 'right', lineHeight: 1.7 }}>

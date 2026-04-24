@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback, useEffect, useMemo } from "react"
 import { DT, DT_FULL, R as DefaultR, SC, CATEGORIES, type Category, type RawData, type Series } from "@/data/commodities"
+import { loadFredData, LIVE_FRED_IDS } from "@/lib/fred"
 import { PriceTrendsChart } from "./PriceTrendsChart"
 import { CostModelPanel } from "./CostModelPanel"
 import { MarketSnapshot } from "./MarketSnapshot"
@@ -136,14 +137,25 @@ export function Dashboard() {
   const [isLight, setIsLight] = useState(false)
   const [customR, setCustomR] = useState<RawData | null>(null)
   const [customSeries, setCustomSeries] = useState<Series[]>([])
+  const [fredR, setFredR] = useState<RawData>({})
+  const [fredLoaded, setFredLoaded] = useState(false)
   const [toastMsg, setToastMsg] = useState('')
   const [toastVisible, setToastVisible] = useState(false)
   const [toastSuccess, setToastSuccess] = useState(false)
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  useEffect(() => { setCustomR(loadCustomData()); setCustomSeries(loadCustomSeries()) }, [])
+  useEffect(() => {
+    setCustomR(loadCustomData())
+    setCustomSeries(loadCustomSeries())
+    loadFredData().then(data => { setFredR(data); setFredLoaded(true) }).catch(() => setFredLoaded(true))
+  }, [])
 
-  const R = customR ?? DefaultR
+  // Priority: user custom data > FRED live data > static defaults
+  const R = useMemo<RawData>(() => ({
+    ...DefaultR,
+    ...fredR,
+    ...(customR ?? {}),
+  }), [customR, fredR])
   const effectiveSC = useMemo(() => [...SC, ...customSeries], [customSeries])
 
   const onSeriesSaved = useCallback((series: Series[]) => {
@@ -176,7 +188,7 @@ export function Dashboard() {
               Commodity Price Dashboard
             </h1>
             <p style={{ fontFamily: "'Fira Code',monospace", fontSize: 12, color: 'var(--d-muted)', marginTop: 5 }}>
-              21 series · Jan 2023 – Apr 2026 · Plastics · Metals · Energy · Shipping
+              {fredLoaded ? `${SC.length} series` : '21 series · loading live data…'} · Jan 2023 – Apr 2026 · Plastics · Metals · Energy · Labor · Macro
             </p>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -216,10 +228,11 @@ export function Dashboard() {
             toIdx={toIdx} setToIdx={setToIdx}
             hidden={hidden} setHidden={setHidden}
             isLight={isLight} R={R} toast={toast}
+            liveIds={fredLoaded ? new Set(Object.keys(fredR)) : new Set<string>()}
           />
         )}
-        {activeTab === 'model' && <CostModelPanel isLight={isLight} R={R} toast={toast} />}
-        {activeTab === 'snapshot' && <MarketSnapshot isLight={isLight} R={R} toast={toast} />}
+        {activeTab === 'model' && <CostModelPanel isLight={isLight} R={R} toast={toast} liveIds={fredLoaded ? new Set(Object.keys(fredR)) : new Set<string>()} />}
+        {activeTab === 'snapshot' && <MarketSnapshot isLight={isLight} R={R} toast={toast} liveIds={fredLoaded ? new Set(Object.keys(fredR)) : new Set<string>()} />}
         {activeTab === 'spreads' && <SpreadsPanel R={R} />}
         {activeTab === 'currency' && <CurrencyPanel isLight={isLight} toast={toast} />}
         {activeTab === 'data' && <DataManager R={R} onSave={onDataSaved} onReset={() => { setCustomR(null); localStorage.removeItem(DATA_KEY); toast('Reset to default data', true) }} toast={toast} customSeries={customSeries} onSeriesSaved={onSeriesSaved} />}

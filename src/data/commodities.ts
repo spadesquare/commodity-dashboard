@@ -27,7 +27,7 @@ export const R: RawData = {
   ship_usec_neu:[1130.04,1119.33,1054.24,903.46,808.95,722.9,668.17,713.38,703.18,669.17,563.33,533.78,561.93,576.03,593.94,584.28,578.9,592.62,656.36,684.86,644.13,682.3,746.48,792.55,798.89,800.16,784.87,729.52,725.55,699.83,762.77,722.45,721.04,732.69,770.94,805.11,825.72,809.33,832.98,880.32],
 }
 
-export type Category = 'all' | 'plastics' | 'metals' | 'energy' | 'shipping' | 'other'
+export type Category = 'all' | 'plastics' | 'metals' | 'energy' | 'shipping' | 'macro' | 'other'
 
 export interface Series {
   id: string
@@ -59,11 +59,35 @@ export const SC: Series[] = [
   {id:'ship_cn_neu',label:'Ship: China → N.Europe',cat:'shipping',unit:'$/FEU',c:'#06c4d4'},
   {id:'ship_neu_usec',label:'Ship: N.Europe → US East',cat:'shipping',unit:'$/FEU',c:'#34d399'},
   {id:'ship_usec_neu',label:'Ship: US East → N.Europe',cat:'shipping',unit:'$/FEU',c:'#22d3ee'},
+  // ── FRED live series (data loaded at runtime, no static array) ──
+  // Energy (gas)
+  {id:'nat_gas_us',label:'Natural Gas (Henry Hub)',    cat:'energy', unit:'$/MMBtu',    c:'#f97316'},
+  {id:'nat_gas_eu',label:'Natural Gas (Europe)',       cat:'energy', unit:'$/MMBtu',    c:'#fb923c'},
+  {id:'nat_gas_cn',label:'Natural Gas (Asia LNG)',     cat:'energy', unit:'$/MMBtu',    c:'#fbbf24'},
+  // Labour costs
+  {id:'labor_us',  label:'Labour Cost (US)',           cat:'macro',  unit:'$/hr',       c:'#7c3aed'},
+  {id:'labor_eu',  label:'Unit Labour Costs (EU)',     cat:'macro',  unit:'idx',        c:'#9333ea'},
+  {id:'labor_de',  label:'Unit Labour Costs (Germany)',cat:'macro',  unit:'idx',        c:'#4338ca'},
+  {id:'labor_cn',  label:'Labour Cost (China)',        cat:'macro',  unit:'idx',        c:'#a855f7'},
+  // CPI — broad
+  {id:'cpi_us',    label:'CPI (US)',                   cat:'macro',  unit:'idx',        c:'#0d9488'},
+  {id:'cpi_eu',    label:'Services Inflation (EU)',    cat:'macro',  unit:'idx',        c:'#14b8a6'},
+  {id:'cpi_cn',    label:'CPI (China)',                cat:'macro',  unit:'idx',        c:'#2dd4bf'},
+  {id:'ppi_us',    label:'PPI (US)',                   cat:'macro',  unit:'idx',        c:'#06b6d4'},
+  // CPI — EU countries (OECD MEI, 2015=100)
+  {id:'cpi_de',    label:'CPI (Germany)',              cat:'macro',  unit:'idx',        c:'#1e40af'},
+  {id:'cpi_fr',    label:'CPI (France)',               cat:'macro',  unit:'idx',        c:'#3b82f6'},
+  {id:'cpi_it',    label:'CPI (Italy)',                cat:'macro',  unit:'idx',        c:'#16a34a'},
+  {id:'cpi_es',    label:'CPI (Spain)',                cat:'macro',  unit:'idx',        c:'#d97706'},
+  {id:'cpi_at',    label:'CPI (Austria)',              cat:'macro',  unit:'idx',        c:'#be185d'},
+  // Logistics / other
+  {id:'pallet',    label:'Wood Pallets (US)',          cat:'other',  unit:'idx',        c:'#b45309'},
+  {id:'trucking',  label:'Trucking (US)',              cat:'other',  unit:'idx',        c:'#92400e'},
 ]
 
 export const SC_MAP = Object.fromEntries(SC.map(s => [s.id, s]))
 
-export const CATEGORIES: Category[] = ['all','plastics','metals','energy','shipping','other']
+export const CATEGORIES: Category[] = ['all','plastics','metals','energy','shipping','macro','other']
 
 export const MODEL_DEFAULTS = [
   {id:'abs_eu',  label:'ABS (EU)',   unit:'€/t', weight:0.22},

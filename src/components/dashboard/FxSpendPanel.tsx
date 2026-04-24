@@ -7,6 +7,8 @@ import {
   LineElement, Tooltip, Legend, Filler, type ChartOptions
 } from "chart.js"
 import { DT, FX } from "@/data/currencies"
+
+type LiveFxData = Record<string, (number | null)[]>
 import { Plus, Trash2, Save, AlertCircle } from "lucide-react"
 import html2canvas from "html2canvas"
 
@@ -42,16 +44,17 @@ const DEFAULT_ALLOCS: Alloc[] = [
   { code: 'JPY', weight:  5, ...EMPTY_ALLOC_EXTRAS },
 ]
 
-// rate(base → quote) at index idx, pivoting via EUR
-function getRate(base: string, quote: string, idx: number): number | null {
+// rate(base → quote) at index idx, pivoting via EUR; live data takes priority over static FX
+function getRate(base: string, quote: string, idx: number, live?: LiveFxData): number | null {
+  const src = (key: string): number | null => live?.[key]?.[idx] ?? FX[key]?.[idx] ?? null
   if (base === quote) return 1
-  if (base === 'EUR') return FX[`eur_${quote.toLowerCase()}`]?.[idx] ?? null
+  if (base === 'EUR') return src(`eur_${quote.toLowerCase()}`)
   if (quote === 'EUR') {
-    const r = FX[`eur_${base.toLowerCase()}`]?.[idx]
+    const r = src(`eur_${base.toLowerCase()}`)
     return r ? 1 / r : null
   }
-  const eurB = FX[`eur_${base.toLowerCase()}`]?.[idx]
-  const eurQ = FX[`eur_${quote.toLowerCase()}`]?.[idx]
+  const eurB = src(`eur_${base.toLowerCase()}`)
+  const eurQ = src(`eur_${quote.toLowerCase()}`)
   if (!eurB || !eurQ) return null
   return eurQ / eurB
 }
@@ -100,8 +103,8 @@ function RateInput({ value, placeholder, onChange }: { value: string; placeholde
   )
 }
 
-export function FxSpendPanel({ isLight, fi, ti, toast }: {
-  isLight: boolean; fi: number; ti: number; toast: (m: string, s?: boolean) => void
+export function FxSpendPanel({ isLight, fi, ti, toast, liveData }: {
+  isLight: boolean; fi: number; ti: number; toast: (m: string, s?: boolean) => void; liveData?: LiveFxData
 }) {
   const [base, setBase]           = useState('EUR')
   const [spend, setSpend]         = useState(1_000_000)
@@ -133,7 +136,7 @@ export function FxSpendPanel({ isLight, fi, ti, toast }: {
       let total = 0, wTotal = 0
       for (const a of allocs) {
         const ref = getRef(a)
-        const rt  = getRate(base, a.code, absIdx)
+        const rt  = getRate(base, a.code, absIdx, liveData)
         if (!ref || !rt) continue
         total += (ref / rt) * a.weight; wTotal += a.weight
       }
@@ -141,9 +144,9 @@ export function FxSpendPanel({ isLight, fi, ti, toast }: {
     })
   }
 
-  const mktBasket  = computeBasket(a => getRate(base, a.code, fi))
-  const suppBasket = computeBasket(a => parseRate(a.supplierRate) ?? getRate(base, a.code, fi))
-  const ctrlBasket = computeBasket(a => parseRate(a.controlRate)  ?? getRate(base, a.code, fi))
+  const mktBasket  = computeBasket(a => getRate(base, a.code, fi, liveData))
+  const suppBasket = computeBasket(a => parseRate(a.supplierRate) ?? getRate(base, a.code, fi, liveData))
+  const ctrlBasket = computeBasket(a => parseRate(a.controlRate)  ?? getRate(base, a.code, fi, liveData))
 
   const mktNow  = mktBasket.at(-1);   const mktImpact  = mktNow  != null ? mktNow  - 100 : null
   const suppNow = suppBasket.at(-1);  const suppImpact = suppNow != null ? suppNow - 100 : null
@@ -154,8 +157,8 @@ export function FxSpendPanel({ isLight, fi, ti, toast }: {
 
   // Per-row stats at ti
   const allocStats = allocs.map(a => {
-    const r0   = getRate(base, a.code, fi)
-    const rt   = getRate(base, a.code, ti)
+    const r0   = getRate(base, a.code, fi, liveData)
+    const rt   = getRate(base, a.code, ti, liveData)
     const mktDelta  = r0 && rt ? (r0 / rt - 1) * 100 : null
     const rateChg   = r0 && rt ? (rt - r0) / r0 * 100 : null
     const sr = parseRate(a.supplierRate)

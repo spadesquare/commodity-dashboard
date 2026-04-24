@@ -19,9 +19,10 @@ interface Props {
   hidden: Set<string>; setHidden: (h: Set<string>) => void
   isLight: boolean; R: RawData
   toast: (msg: string, success?: boolean) => void
+  liveIds?: Set<string>
 }
 
-export function PriceTrendsChart({ cat, setCat, fromIdx, setFromIdx, toIdx, setToIdx, hidden, setHidden, isLight, R, toast }: Props) {
+export function PriceTrendsChart({ cat, setCat, fromIdx, setFromIdx, toIdx, setToIdx, hidden, setHidden, isLight, R, toast, liveIds }: Props) {
   const [viewMode, setViewMode] = useState<'absolute' | 'indexed'>('absolute')
   const [preset, setPreset] = useState('all')
   const cardRef = useRef<HTMLDivElement>(null)
@@ -193,17 +194,24 @@ export function PriceTrendsChart({ cat, setCat, fromIdx, setFromIdx, toIdx, setT
             <Btn onClick={() => setHidden(new Set(activeSC.map(s => s.id)))}>Hide all</Btn>
           </div>
         </div>
+        <style>{`@keyframes leg-live{0%,100%{opacity:1}50%{opacity:0.35}}`}</style>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-          {activeSC.map(s => (
-            <div key={s.id} className={`leg-item${hidden.has(s.id) ? ' dimmed' : ''}`}
-              onClick={() => { const n = new Set(hidden); n.has(s.id) ? n.delete(s.id) : n.add(s.id); setHidden(n) }}
-            >
-              <span className="leg-swatch" style={{ background: s.c }} />
-              {s.label}
-            </div>
-          ))}
+          {activeSC.map(s => {
+            const live = liveIds?.has(s.id)
+            return (
+              <div key={s.id} className={`leg-item${hidden.has(s.id) ? ' dimmed' : ''}`}
+                onClick={() => { const n = new Set(hidden); n.has(s.id) ? n.delete(s.id) : n.add(s.id); setHidden(n) }}
+              >
+                <span className="leg-swatch" style={{ background: s.c }} />
+                {s.label}
+                {live && (
+                  <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#22c55e', display: 'inline-block', flexShrink: 0, animation: 'leg-live 1.5s ease-in-out infinite', marginLeft: 2 }} title="Live FRED data" />
+                )}
+              </div>
+            )
+          })}
         </div>
-        <p style={{ fontSize: 10, color: 'var(--d-muted)', fontStyle: 'italic', marginTop: 10 }}>Click to toggle series visibility</p>
+        <p style={{ fontSize: 10, color: 'var(--d-muted)', fontStyle: 'italic', marginTop: 10 }}>Click to toggle · <span style={{ color: '#22c55e' }}>●</span> = live FRED data</p>
       </div>
     </div>
   )
