@@ -23,7 +23,7 @@ function buildGrid(monthly: Record<string, number[]>): (number | null)[] {
 export async function GET() {
   try {
     const res = await fetch(`${BASE_URL}?base=EUR&to=${QUOTES.join(',')}`, {
-      next: { revalidate: 3600 },
+      next: { revalidate: 604800 }, // 1 week
     })
     if (!res.ok) return NextResponse.json({}, { status: 502 })
 

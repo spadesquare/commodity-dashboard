@@ -1,5 +1,5 @@
 const FX_CACHE_KEY = 'fx_live_data_v1'
-const FX_CACHE_TTL = 4 * 60 * 60 * 1000 // 4 hours
+const FX_CACHE_TTL = 7 * 24 * 60 * 60 * 1000 // 1 week
 
 export async function loadFxData(): Promise<Record<string, (number | null)[]>> {
   try {
